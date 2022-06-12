@@ -10,6 +10,8 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list \
     # Install general packages
     ## C
     && apt-get install -y gcc \
+    ## Go
+    && apt-get install -y golang-go \
     ## Fortran
     && apt-get install -y gfortran \
     ## Julia
