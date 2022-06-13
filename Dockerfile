@@ -32,5 +32,5 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list \
     && rm -rf /var/lib/apt/lists/*
 
 COPY Makefile $HOME/burger.bench/
-COPY main.py $HOME/burger.bench/
 COPY burger/ $HOME/burger.bench/burger/
+COPY script/ $HOME/burger.bench/script/
