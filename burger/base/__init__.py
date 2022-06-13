@@ -29,26 +29,35 @@ class Bench:
         self.directory.mkdir(parents=True, exist_ok=True)
         self.parameters = {'N': N, 'RE': RE, 'L': L, 'T': T, 'CFL': CFL}
         self.result = None
+        self._is_compiled = False
 
     def compile(self) -> 'Bench':
-        text = self._render(self.__template__.read_text())
-        (self.directory/self.__template__.name).write_text(text)
-        for command in self._compile():
-            cp = self._raw(command)
-            assert cp.returncode==0, cp.stdout.decode()
+        if not self._is_compiled:
+            text = self._render(self.__template__.read_text())
+            (self.directory/self.__template__.name).write_text(text)
+            for command in self._compile():
+                cp = self._raw(command)
+                assert cp.returncode==0, cp.stdout.decode()
+            self._is_compiled = True
         return self
 
     def run(self) -> 'Bench':
+        self.compile()
         cp = self._raw(self._run())
         assert cp.returncode==0, cp.stdout.decode()
         self.result = np.array(self._parse(cp.stdout.decode()))
         return self
 
-    def hyperfine(self, warmup: int = 3, min_runs: int = 10) -> t.Dict[str, t.Any]:
+    def reset(self) -> 'Bench':
+        self._is_compiled = False
+        return self
+
+    def hyperfine(self, warmup: int = 3, min_runs: int = 9) -> t.Dict[str, t.Any]:
         '''
         - Reference:
             - https://github.com/sharkdp/hyperfine
         '''
+        self.compile()
         args = ['hyperfine', f"'{self._run()}'"]
         if warmup:
             args += ['--warmup', warmup]
