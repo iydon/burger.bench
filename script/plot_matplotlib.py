@@ -70,6 +70,6 @@ if __name__ == '__main__':
             figure.errorbar(xs, ys, errs, label=lang.capitalize())
         figure \
             .set_label(x='N', y='Time (s)') \
-            .set_title('Runtimes of Different Programming Languages (Stack)') \
+            .set_title('Runtimes of Different Programming Languages') \
             .save('lang.png', legend_ncol=1)
         plt.show()
