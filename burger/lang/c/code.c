@@ -1,4 +1,4 @@
-    #include <stdio.h>
+#include <stdio.h>
 #include <math.h>
 
 #define PI 3.14159265358979323846
@@ -66,7 +66,11 @@ int main() {
     double dx = L / (double) N;
     double dt = __CFL__ * dx;
     size_t nt = (size_t) (T / dt);
-    double u1[N+7], u2[N+7], un[N+7], uold[N+7];
+    double *u1, *u2, *un, *uold;
+    u1 = (double*)malloc((N+7)*sizeof(double));
+    u2 = (double*)malloc((N+7)*sizeof(double));
+    un = (double*)malloc((N+7)*sizeof(double));
+    uold = (double*)malloc((N+7)*sizeof(double));
 
     size_t ith, jth;
 
@@ -101,4 +105,9 @@ int main() {
     }
 
     print_array(un, N+7);
+
+    free(u1);
+    free(u2);
+    free(un);
+    free(uold);
 }

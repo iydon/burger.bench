@@ -56,10 +56,10 @@ fn main() {
     let dx = L / N as f64;
     let dt = __CFL__ * dx;
     let nt = (T / dt) as usize;
-    let mut u1 = [0.0; N+7];
-    let mut u2 = [0.0; N+7];
-    let mut un = [0.0; N+7];
-    let mut uold: [f64; N+7];
+    let mut u1 = vec![0.0; N+7];
+    let mut u2 = vec![0.0; N+7];
+    let mut un = vec![0.0; N+7];
+    let mut uold: Vec<f64>;
 
     for ith in 4..N+4 {
         un[ith] = (

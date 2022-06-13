@@ -7,8 +7,10 @@ program main
     integer, parameter :: N = __N__
 
     real(f64) :: dx, dt, lu_value
-    real(f64), dimension(N+7) :: u1, u2, un, uold
+    real(f64), dimension(:), allocatable :: u1, u2, un, uold
     integer :: nt, ith, jth
+
+    allocate(u1(N+7), u2(N+7), un(N+7), uold(N+7))
 
     dx = L / N
     dt = __CFL__ * L / N
@@ -44,6 +46,8 @@ program main
     end do
 
     write(*, *) un
+
+    deallocate(u1, u2, un, uold)
 end program
 
 subroutine boundary(u, N)
