@@ -15,7 +15,7 @@ class BenchPython(Bench):
         return 'python3 --version'
 
     def _compile(self) -> t.List[str]:
-        return []
+        return ['python3 -m compileall code.py']
 
     def _run(self) -> str:
         return 'python3 -OO code.py'
