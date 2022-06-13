@@ -38,6 +38,14 @@ class Figure:
         self._ax.plot(x, y, **kwargs)
         return self
 
+    def semilogy(self, x: t.Any, y: t.Any, label: str, **kwargs) -> 'Figure':
+        kwargs = {
+            'marker': 'o', 'markersize': 7, 'label': label,
+            **kwargs,
+        }
+        self._ax.semilogy(x, y, **kwargs)
+        return self
+
     def scatter(self, x: t.Any, y: t.Any, label: str, **kwargs) -> 'Figure':
         kwargs = {'label': label, **kwargs}
         self._ax.scatter(x, y, **kwargs)
@@ -67,11 +75,11 @@ if __name__ == '__main__':
             xs, ys = [], []
             for N, value in values.items():
                 xs.append(int(N))
-                ys.append(value['mean'])
-            figure.plot(xs, ys, label=lang.capitalize())
+                ys.append(value['mean']/1024)
+            figure.semilogy(xs, ys, label=lang.capitalize())
         figure \
-            .set_label(x='N', y='Memory (KiB)') \
-            .set_title('Memory Usage of Different Programming Languages') \
+            .set_label(x='N', y='Memory (MiB)') \
+            .set_title('Memory Usage of Different Programming Languages (VmRSS)') \
             .save('memory.png', legend_ncol=1)
         # time
         time = data['time']
@@ -85,6 +93,6 @@ if __name__ == '__main__':
             figure.errorbar(xs, ys, errs, label=lang.capitalize())
         figure \
             .set_label(x='N', y='Time (s)') \
-            .set_title('Runtimes of Different Programming Languages') \
+            .set_title('Runtime of Different Programming Languages') \
             .save('time.png', legend_ncol=1)
         plt.show()
