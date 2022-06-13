@@ -6,9 +6,12 @@ import pathlib as p
 import shlex
 import subprocess
 import tempfile
+import time
 import typing as t
 
 import numpy as np
+
+from .util import Proc
 
 
 class Bench:
@@ -30,6 +33,7 @@ class Bench:
         self.parameters = {'N': N, 'RE': RE, 'L': L, 'T': T, 'CFL': CFL}
         self.result = None
         self._is_compiled = False
+        self._proc = Proc.new()
 
     @classmethod
     def version(cls) -> str:
@@ -74,6 +78,26 @@ class Bench:
             assert cp.returncode == 0
             f.seek(0)
             return json.loads(f.read())['results'][0]
+
+    def memory(self, milliseconds: int = 5) -> t.Dict[str, float]:
+        '''
+        - Reference:
+            - https://github.com/pixelb/ps_mem
+        '''
+        self.compile()
+        min_, max_, total, count = float('inf'), 0.0, 0.0, 0  # KiB
+        p = subprocess.Popen(shlex.split(self._run()), cwd=self.directory)
+        while p.poll() is None:
+            try:
+                memory = self._proc.memory(p.pid)
+            except ProcessLookupError:
+                break
+            min_ = min(min_, memory)
+            max_ = max(max_, memory)
+            total += memory
+            count += 1
+            time.sleep(milliseconds/1000)
+        return {'min': min_, 'max': max_, 'mean': total/count}
 
     @classmethod
     def _version(self) -> str:

@@ -66,3 +66,9 @@ class Benches:
             key: value.hyperfine(warmup, min_runs)
             for key, value in self.benches.items()
         }
+
+    def memory(self, milliseconds: int = 5) -> t.Dict[str, t.Dict[str, float]]:
+        return {
+            key: value.memory(milliseconds)
+            for key, value in self.benches.items()
+        }
