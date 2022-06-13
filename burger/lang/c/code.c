@@ -2,7 +2,7 @@
 #include <math.h>
 
 #define PI 3.14159265358979323846
-#define pow2(x) (x)*(x)
+#define pow2(x) ((x)*(x))
 #define max(a,b) ((a)>(b)?(a):(b))
 
 #define N __N__
@@ -56,7 +56,7 @@ double lu(double *u, size_t jth, double dx) {
 }
 
 void print_array(double *array, size_t length) {
-    for (size_t ith=0; ith<length; ++ith) {
+    for (size_t ith=0; ith<length; ith++) {
         printf("%.7f, ", array[ith]);
     }
     printf("\n");
@@ -67,38 +67,33 @@ int main() {
     double dt = __CFL__ * dx;
     size_t nt = (size_t) (T / dt);
     double *u1, *u2, *un, *uold;
-    u1 = (double*)malloc((N+7)*sizeof(double));
-    u2 = (double*)malloc((N+7)*sizeof(double));
-    un = (double*)malloc((N+7)*sizeof(double));
-    uold = (double*)malloc((N+7)*sizeof(double));
+    u1 = (double*) calloc((N+7), sizeof(double));
+    u2 = (double*) calloc((N+7), sizeof(double));
+    un = (double*) calloc((N+7), sizeof(double));
+    uold = (double*) calloc((N+7), sizeof(double));
 
     size_t ith, jth;
 
-    for (ith=0; ith<N+7; ++ith) {
-        u1[ith] = 0.0;
-        u2[ith] = 0.0;
-        un[ith] = 0.0;
-    }
-    for (ith=4; ith<N+4; ++ith) {
+    for (ith=4; ith<N+4; ith++) {
         un[ith] = (
             - cos(2.0*PI*((double) ith - 2.5)*dx) / (2.0*PI)
             + cos(2.0*PI*((double) ith - 3.5)*dx) / (2.0*PI)
         ) / dx + 1.0;
     }
 
-    for (ith=0; ith<nt; ++ith) {
-        for (jth=0; jth<N+7; ++jth) {
+    for (ith=0; ith<nt; ith++) {
+        for (jth=0; jth<N+7; jth++) {
             uold[jth] = un[jth];
         }
-        for (jth=4; jth<N+4; ++jth) {
+        for (jth=4; jth<N+4; jth++) {
             u1[jth] = uold[jth] + dt*lu(uold, jth, dx);
         }
         boundary(u1);
-        for (jth=4; jth<N+4; ++jth) {
+        for (jth=4; jth<N+4; jth++) {
             u2[jth] = 3.0/4.0*uold[jth] + 1.0/4.0*u1[jth] + 1.0/4.0*dt*lu(u1, jth, dx);
         }
         boundary(u2);
-        for (jth=4; jth<N+4; ++jth) {
+        for (jth=4; jth<N+4; jth++) {
             un[jth] = 1.0/3.0*uold[jth] + 2.0/3.0*u2[jth] + 2.0/3.0*dt*lu(u2, jth, dx);
         }
         boundary(un);
@@ -107,7 +102,11 @@ int main() {
     print_array(un, N+7);
 
     free(u1);
+    u1 = NULL;
     free(u2);
+    u2 = NULL;
     free(un);
+    un = NULL;
     free(uold);
+    uold = NULL;
 }
