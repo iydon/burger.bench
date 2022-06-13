@@ -59,7 +59,7 @@ class Figure:
 
 if __name__ == '__main__':
     for path in sys.argv[1:]:
-        data = json.loads(p.Path(path).read_text())
+        data = json.loads(p.Path(path).read_text())['data']
         figure = Figure.new().set_color_number(len(data))
         for lang, values in data.items():
             xs, ys, errs = [], [], []

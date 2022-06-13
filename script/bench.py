@@ -17,4 +17,4 @@ for name, Bench in Benches.Ts.items():
         if result['mean'] > threshold:
             break
 with open('bench.json', 'w') as f:
-    json.dump(data, f)
+    json.dump({'meta': Benches.version(), 'data': data}, f)

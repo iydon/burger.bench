@@ -12,7 +12,7 @@ sns.set_theme()
 
 if __name__ == '__main__':
     for path in sys.argv[1:]:
-        data = json.loads(p.Path(path).read_text())
+        data = json.loads(p.Path(path).read_text())['data']
         dfs = [None] * len(data)
         for ith, (lang, values) in enumerate(data.items()):
             xs, ys = [], []
