@@ -42,14 +42,14 @@ class Bench:
             (self.directory/self.__template__.name).write_text(text)
             for command in self._compile():
                 cp = self._raw(command)
-                assert cp.returncode==0, cp.stdout.decode()
+                assert cp.returncode==0, cp.stderr.decode()
             self._is_compiled = True
         return self
 
     def run(self) -> 'Bench':
         self.compile()
         cp = self._raw(self._run())
-        assert cp.returncode==0, cp.stdout.decode()
+        assert cp.returncode==0, cp.stderr.decode()
         self.result = np.array(self._parse(cp.stdout.decode()))
         return self
 

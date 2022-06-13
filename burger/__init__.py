@@ -23,8 +23,9 @@ class Benches:
         N: int = 1024, RE: float = 200.0, L: float = 1.0, T: float = 2.0,
         CFL: float = 0.1,
     ) -> None:
+        directory = p.Path(directory)
         self.benches = {
-            key: Value(directory, N, RE, L, T, CFL)
+            key: Value(directory/key, N, RE, L, T, CFL)
             for key, Value in self.Ts.items()
         }
 
