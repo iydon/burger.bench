@@ -60,8 +60,23 @@ class Figure:
 if __name__ == '__main__':
     for path in sys.argv[1:]:
         data = json.loads(p.Path(path).read_text())['data']
-        figure = Figure.new().set_color_number(len(data))
-        for lang, values in data.items():
+        # memory
+        memory = data['memory']
+        figure = Figure.new().set_color_number(len(memory))
+        for lang, values in memory.items():
+            xs, ys = [], []
+            for N, value in values.items():
+                xs.append(int(N))
+                ys.append(value['mean'])
+            figure.plot(xs, ys, label=lang.capitalize())
+        figure \
+            .set_label(x='N', y='Memory (KiB)') \
+            .set_title('Memory Usage of Different Programming Languages') \
+            .save('memory.png', legend_ncol=1)
+        # time
+        time = data['time']
+        figure = Figure.new().set_color_number(len(time))
+        for lang, values in time.items():
             xs, ys, errs = [], [], []
             for N, value in values.items():
                 xs.append(int(N))
@@ -71,5 +86,5 @@ if __name__ == '__main__':
         figure \
             .set_label(x='N', y='Time (s)') \
             .set_title('Runtimes of Different Programming Languages') \
-            .save('lang.png', legend_ncol=1)
+            .save('time.png', legend_ncol=1)
         plt.show()
