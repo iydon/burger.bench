@@ -27,11 +27,10 @@ double weno(double a, double b, double c, double d, double e) {
     double wf1 = 1.0/10.0 / pow2(beta1 + 1e-6);
     double wf2 = 3.0/5.0 / pow2(beta2 + 1e-6);
     double wf3 = 3.0/10.0 / pow2(beta3 + 1e-6);
-    double wfs = wf1 + wf2 + wf3;
     double u1 = 1.0/3.0*a - 7.0/6.0*b + 11.0/6.0*c;
     double u2 = -1.0/6.0*b + 5.0/6.0*c + 1.0/3.0*d;
     double u3 = 1.0/3.0*c + 5.0/6.0*d - 1.0/6.0*e;
-    return (wf1*u1 + wf2*u2 + wf3*u3) / wfs;
+    return (wf1*u1 + wf2*u2 + wf3*u3) / (wf1 + wf2 + wf3);
 }
 
 double flux(double *u, size_t jth, double dx) {
