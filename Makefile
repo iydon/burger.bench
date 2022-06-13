@@ -9,7 +9,9 @@ help:     ## Print the usage
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
 bench:    ## Run benchmark scripts
-	$(PYTHON) main.py
+	cp script/$@.py .
+	$(PYTHON) $@.py
+	rm $@.py
 
 docker:   ## Build image from Dockerfile
 	$(DOCKER) build -t bench:$(VERSION) .
