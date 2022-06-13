@@ -10,6 +10,10 @@ from ...base import Bench
 class BenchFortran(Bench):
     __template__ = p.Path(__file__).parent / 'code.f90'
 
+    @classmethod
+    def _version(self) -> str:
+        return 'gfortran --version'
+
     def _compile(self) -> t.List[str]:
         return ['gfortran code.f90 -O3 -o fortran']
 

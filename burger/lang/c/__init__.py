@@ -10,6 +10,10 @@ from ...base import Bench
 class BenchC(Bench):
     __template__ = p.Path(__file__).parent / 'code.c'
 
+    @classmethod
+    def _version(self) -> str:
+        return 'gcc --version'
+
     def _compile(self) -> t.List[str]:
         return ['gcc code.c -lm -O3 -o c']
 

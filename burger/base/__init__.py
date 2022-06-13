@@ -31,6 +31,11 @@ class Bench:
         self.result = None
         self._is_compiled = False
 
+    @classmethod
+    def version(cls) -> str:
+        args = shlex.split(cls._version())
+        return subprocess.run(args, capture_output=True).stdout.decode()
+
     def compile(self) -> 'Bench':
         if not self._is_compiled:
             text = self._render(self.__template__.read_text())
@@ -69,6 +74,10 @@ class Bench:
             assert cp.returncode == 0
             f.seek(0)
             return json.loads(f.read())['results'][0]
+
+    @classmethod
+    def _version(self) -> str:
+        raise NotImplementedError
 
     def _compile(self) -> t.List[str]:
         raise NotImplementedError

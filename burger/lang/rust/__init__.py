@@ -10,6 +10,10 @@ from ...base import Bench
 class BenchRust(Bench):
     __template__ = p.Path(__file__).parent / 'code.rs'
 
+    @classmethod
+    def _version(self) -> str:
+        return 'rustc --version'
+
     def _compile(self) -> t.List[str]:
         return ['rustc code.rs -C opt-level=3 -o rust']
 

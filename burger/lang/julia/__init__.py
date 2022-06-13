@@ -10,6 +10,10 @@ from ...base import Bench
 class BenchJulia(Bench):
     __template__ = p.Path(__file__).parent / 'code.jl'
 
+    @classmethod
+    def _version(self) -> str:
+        return 'julia --version'
+
     def _compile(self) -> t.List[str]:
         return []
 
