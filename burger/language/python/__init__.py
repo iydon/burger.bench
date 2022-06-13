@@ -1,0 +1,20 @@
+__all__ = ['BenchPython']
+
+
+import pathlib as p
+import typing as t
+
+from ...base import Bench
+
+
+class BenchPython(Bench):
+    __template__ = p.Path(__file__).parent / 'code.py'
+
+    def _compile(self) -> t.List[str]:
+        return []
+
+    def _run(self) -> str:
+        return 'python3 -OO code.py'
+
+    def _parse(self, text: str) -> t.List[float]:
+        return list(map(float, text.split(',')))
