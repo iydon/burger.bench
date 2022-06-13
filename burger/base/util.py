@@ -55,6 +55,20 @@ class Proc:
             private = rss - shared
         return private + shared
 
+    def memory_rss(self, pid: int) -> float:
+        '''
+        - Reference:
+            - https://elinux.org/Runtime_Memory_Measurement
+        '''
+        result = 0.0
+        if self._path(pid, 'status').exists():
+            with self._open(pid, 'status') as f:
+                for line in f.readlines():
+                    if 'VmRSS' in line:
+                        result = float(line.split()[1])
+                        break
+        return result
+
     def _path(self, *args: t.Union[str, int]) -> p.Path:
         return self.proc / p.Path(*map(str, args))
 

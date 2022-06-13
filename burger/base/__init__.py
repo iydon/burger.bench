@@ -86,10 +86,11 @@ class Bench:
         '''
         self.compile()
         min_, max_, total, count = float('inf'), 0.0, 0.0, 0  # KiB
-        p = subprocess.Popen(shlex.split(self._run()), cwd=self.directory)
+        args = shlex.split(self._run())
+        p = subprocess.Popen(args, stdout=subprocess.PIPE, cwd=self.directory)
         while p.poll() is None:
             try:
-                memory = self._proc.memory(p.pid)
+                memory = self._proc.memory_rss(p.pid)
             except ProcessLookupError:
                 break
             min_ = min(min_, memory)
