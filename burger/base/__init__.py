@@ -85,20 +85,30 @@ class Bench:
             - https://github.com/pixelb/ps_mem
         '''
         self.compile()
-        min_, max_, total, count = float('inf'), 0.0, 0.0, 0  # KiB
+        result = {  # kB
+            field: {
+                'min': float('inf'), 'max': 0.0,
+                'mean': 0.0, 'count': 0,
+            } for field in self._proc.fields
+        }
         args = shlex.split(self._run())
         p = subprocess.Popen(args, stdout=subprocess.PIPE, cwd=self.directory)
         while p.poll() is None:
             try:
-                memory = self._proc.memory_rss(p.pid)
+                memory = self._proc.status(p.pid)
             except ProcessLookupError:
                 break
-            min_ = min(min_, memory)
-            max_ = max(max_, memory)
-            total += memory
-            count += 1
+            for field, value in memory.items():
+                temp = result[field]
+                temp['min'] = min(temp['min'], value)
+                temp['max'] = max(temp['max'], value)
+                temp['mean'] += value
+                temp['count'] += 1
             time.sleep(milliseconds/1000)
-        return {'min': min_, 'max': max_, 'mean': total/count}
+        for value in result.values():
+            value['mean'] /= value['count']
+            value.pop('count')
+        return result
 
     @classmethod
     def _version(self) -> str:

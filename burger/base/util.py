@@ -15,6 +15,12 @@ class Proc:
 
     PAGESIZE = os.sysconf('SC_PAGE_SIZE') / 1024  # KiB
 
+    fields = {
+        'VmPeak', 'VmSize', 'VmLck', 'VmPin', 'VmHWM', 'VmRSS',
+        'RssAnon', 'RssFile', 'RssShmem', 'VmData', 'VmStk',
+        'VmExe', 'VmLib', 'VmPTE', 'VmSwap', 'HugetlbPages',
+    }
+
     def __init__(self):
         if os.uname()[0] == 'FreeBSD':
             self.proc = p.Path('/compat/linux/proc')
@@ -55,18 +61,19 @@ class Proc:
             private = rss - shared
         return private + shared
 
-    def memory_rss(self, pid: int) -> float:
+    def status(self, pid: int) -> t.Dict[str, float]:
         '''
         - Reference:
             - https://elinux.org/Runtime_Memory_Measurement
         '''
-        result = 0.0
-        if self._path(pid, 'status').exists():
-            with self._open(pid, 'status') as f:
-                for line in f.readlines():
-                    if 'VmRSS' in line:
-                        result = float(line.split()[1])
-                        break
+        assert self._path(pid, 'status').exists()
+
+        result = {}
+        with self._open(pid, 'status') as f:
+            for line in f.readlines():
+                for field in self.fields:
+                    if line.startswith(field):
+                        result[field] = float(line.split()[1])
         return result
 
     def _path(self, *args: t.Union[str, int]) -> p.Path:
