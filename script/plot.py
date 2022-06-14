@@ -66,21 +66,27 @@ class Figure:
 
 
 if __name__ == '__main__':
+    root = p.Path('image')
+    root.mkdir(parents=True, exist_ok=True)
+
     for path in sys.argv[1:]:
         data = json.loads(p.Path(path).read_text())['data']
         # memory
+        directory = root / 'memory'
+        directory.mkdir(parents=True, exist_ok=True)
         memory = data['memory']
-        figure = Figure.new().set_color_number(len(memory))
-        for lang, values in memory.items():
-            xs, ys = [], []
-            for N, value in values.items():
-                xs.append(int(N))
-                ys.append(value['mean']/1024)
-            figure.semilogy(xs, ys, label=lang.capitalize())
-        figure \
-            .set_label(x='N', y='Memory (MiB)') \
-            .set_title('Memory Usage of Different Programming Languages (VmRSS)') \
-            .save('memory.png', legend_ncol=1)
+        for field in next(iter(next(iter(memory.values())).values())):
+            figure = Figure.new().set_color_number(len(memory))
+            for lang, values in memory.items():
+                xs, ys = [], []
+                for N, value in values.items():
+                    xs.append(int(N))
+                    ys.append(value[field]['mean']*1000/2**20)
+                figure.semilogy(xs, ys, label=lang.capitalize())
+            figure \
+                .set_label(x='N', y='Memory (MiB)') \
+                .set_title(f'Memory Usage of Different Programming Languages ({field})') \
+                .save(directory/f'{field}.png', legend_ncol=1)
         # time
         time = data['time']
         figure = Figure.new().set_color_number(len(time))
@@ -94,5 +100,5 @@ if __name__ == '__main__':
         figure \
             .set_label(x='N', y='Time (s)') \
             .set_title('Runtime of Different Programming Languages') \
-            .save('time.png', legend_ncol=1)
+            .save(root/'time.png', legend_ncol=1)
         plt.show()
