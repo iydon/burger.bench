@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 
@@ -109,4 +110,6 @@ int main() {
     un = NULL;
     free(uold);
     uold = NULL;
+
+    return 0;
 }
