@@ -17,6 +17,7 @@ func main() {
     u1 := make([]float64, N+7);
     u2 := make([]float64, N+7);
     un := make([]float64, N+7);
+    uold := make([]float64, N+7);
 
     var ith, jth uint;
 
@@ -25,7 +26,7 @@ func main() {
     }
 
     for ith=0; ith<nt; ith++ {
-        uold := un;
+        copy(uold, un)
         for jth=4; jth<N+4; jth++ {
             u1[jth] = uold[jth] + dt*lu(uold, jth, dx, RE);
         }
@@ -43,6 +44,10 @@ func main() {
     fmt.Println(un);
 }
 
+func pow2(x float64) float64 {
+    return x * x
+}
+
 func boundary(u []float64, N uint) {
     u[3] = u[N + 3];
     u[2] = u[N + 2];
@@ -54,12 +59,12 @@ func boundary(u []float64, N uint) {
 }
 
 func weno(a float64, b float64, c float64, d float64, e float64) float64 {
-    beta1 := 13.0/12.0*math.Pow(a - 2.0*b + c, 2) + 1.0/4.0*math.Pow(a - 4.0*b + 3.0*c, 2);
-    beta2 := 13.0/12.0*math.Pow(b - 2.0*c + d, 2) + 1.0/4.0*math.Pow(b - d, 2);
-    beta3 := 13.0/12.0*math.Pow(c - 2.0*d + e, 2) + 1.0/4.0*math.Pow(3.0*c - 4.0*d + e, 2);
-    wf1 := 1.0/10.0 / math.Pow(beta1 + 1e-6, 2);
-    wf2 := 3.0/5.0 / math.Pow(beta2 + 1e-6, 2);
-    wf3 := 3.0/10.0 / math.Pow(beta3 + 1e-6, 2);
+    beta1 := 13.0/12.0*pow2(a - 2.0*b + c) + 1.0/4.0*pow2(a - 4.0*b + 3.0*c);
+    beta2 := 13.0/12.0*pow2(b - 2.0*c + d) + 1.0/4.0*pow2(b - d);
+    beta3 := 13.0/12.0*pow2(c - 2.0*d + e) + 1.0/4.0*pow2(3.0*c - 4.0*d + e);
+    wf1 := 1.0/10.0 / pow2(beta1 + 1e-6);
+    wf2 := 3.0/5.0 / pow2(beta2 + 1e-6);
+    wf3 := 3.0/10.0 / pow2(beta3 + 1e-6);
     u1 := 1.0/3.0*a - 7.0/6.0*b + 11.0/6.0*c;
     u2 := -1.0/6.0*b + 5.0/6.0*c + 1.0/3.0*d;
     u3 := 1.0/3.0*c + 5.0/6.0*d - 1.0/6.0*e;
@@ -73,15 +78,15 @@ func flux(u []float64, jth uint, dx float64) float64 {
     umm := weno(u[jth-3], u[jth-2], u[jth-1], u[jth], u[jth+1]);
     alpha1 := math.Max(math.Abs(upp), math.Abs(upm));
     alpha2 := math.Max(math.Abs(ump), math.Abs(umm));
-    flux1 := 1.0/2.0 * (1.0/2.0*math.Pow(upm, 2) + 1.0/2.0*math.Pow(upp, 2) - alpha1*(upp-upm)/2.0);
-    flux2 := 1.0/2.0 * (1.0/2.0*math.Pow(umm, 2) + 1.0/2.0*math.Pow(ump, 2) - alpha2*(ump-umm)/2.0);
+    flux1 := 1.0/2.0 * (1.0/2.0*pow2(upm) + 1.0/2.0*pow2(upp) - alpha1*(upp-upm)/2.0);
+    flux2 := 1.0/2.0 * (1.0/2.0*pow2(umm) + 1.0/2.0*pow2(ump) - alpha2*(ump-umm)/2.0);
     return - (flux1-flux2) / dx;
 }
 
 func diffusion(u []float64, jth uint, dx float64, re float64) float64 {
     diffusion_plus := 1.0/12.0*u[jth-1] - 5.0/4.0*u[jth] + 5.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2];
     diffusion_minus := -11.0/12.0*u[jth-1] + 3.0/4.0*u[jth] + 1.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2];
-    return (diffusion_plus-diffusion_minus) / (re*math.Pow(dx, 2));
+    return (diffusion_plus-diffusion_minus) / (re*pow2(dx));
 }
 
 func lu(u []float64, jth uint, dx float64, re float64) float64 {
