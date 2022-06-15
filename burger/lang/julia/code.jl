@@ -23,27 +23,27 @@ function weno(a::Float64, b::Float64, c::Float64, d::Float64, e::Float64)::Float
 end
 
 @inbounds \
-function flax(u::Matrix{Float64}, jth::Int, dx::Float64)::Float64
+function flux(u::Matrix{Float64}, jth::Int, dx::Float64)::Float64
     upp = weno(u[jth+4], u[jth+3], u[jth+2], u[jth+1], u[jth]);
     upm = weno(u[jth-1], u[jth], u[jth+1], u[jth+2], u[jth+3]);
     ump = weno(u[jth+3], u[jth+2], u[jth+1], u[jth], u[jth-1]);
     umm = weno(u[jth-2], u[jth-1], u[jth], u[jth+1], u[jth+2]);
     alpha1 = max(abs(upp), abs(upm));
     alpha2 = max(abs(ump), abs(umm));
-    flax1 = 1.0/2.0 * (1.0/2.0*upm^2 + 1.0/2.0*upp^2 - alpha1*(upp-upm)/2.0);
-    flax2 = 1.0/2.0 * (1.0/2.0*umm^2 + 1.0/2.0*ump^2 - alpha2*(ump-umm)/2.0);
-    return - (flax1-flax2) / dx;
+    flux1 = 1.0/2.0 * (1.0/2.0*upm^2 + 1.0/2.0*upp^2 - alpha1*(upp-upm)/2.0);
+    flux2 = 1.0/2.0 * (1.0/2.0*umm^2 + 1.0/2.0*ump^2 - alpha2*(ump-umm)/2.0);
+    return - (flux1-flux2) / dx;
 end
 
 @inbounds \
-function diffsion(u::Matrix{Float64}, jth::Int, dx::Float64, Re::Float64)::Float64
-    diffision_plus = 1.0/12.0*u[jth] - 5.0/4.0*u[jth+1] + 5.0/4.0*u[jth+2] - 1.0/12.0*u[jth+3];
-    diffision_minus = -11.0/12.0*u[jth] + 3.0/4.0*u[jth+1] + 1.0/4.0*u[jth+2] - 1.0/12.0*u[jth+3];
-    return (diffision_plus-diffision_minus) / (Re*dx^2);
+function diffusion(u::Matrix{Float64}, jth::Int, dx::Float64, Re::Float64)::Float64
+    diffusion_plus = 1.0/12.0*u[jth] - 5.0/4.0*u[jth+1] + 5.0/4.0*u[jth+2] - 1.0/12.0*u[jth+3];
+    diffusion_minus = -11.0/12.0*u[jth] + 3.0/4.0*u[jth+1] + 1.0/4.0*u[jth+2] - 1.0/12.0*u[jth+3];
+    return (diffusion_plus-diffusion_minus) / (Re*dx^2);
 end
 
 function lu(u::Matrix{Float64}, jth::Int, dx::Float64, Re::Float64)::Float64
-    return flax(u, jth, dx) + diffsion(u, jth, dx, Re);
+    return flux(u, jth, dx) + diffusion(u, jth, dx, Re);
 end
 
 

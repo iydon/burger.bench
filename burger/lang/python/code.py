@@ -40,9 +40,9 @@ def flux(u: np.ndarray, jth: int, dx: float) -> float:
 
 @njit
 def diffusion(u: np.ndarray, jth: int, dx: float, RE: float) -> float:
-    diffision_plus = 1.0/12.0*u[jth-1] - 5.0/4.0*u[jth] + 5.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2]
-    diffision_minus = -11.0/12.0*u[jth-1] + 3.0/4.0*u[jth] + 1.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2]
-    return (diffision_plus-diffision_minus) / (RE*dx**2)
+    diffusion_plus = 1.0/12.0*u[jth-1] - 5.0/4.0*u[jth] + 5.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2]
+    diffusion_minus = -11.0/12.0*u[jth-1] + 3.0/4.0*u[jth] + 1.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2]
+    return (diffusion_plus-diffusion_minus) / (RE*dx**2)
 
 @njit
 def lu(u: np.ndarray, jth: int, dx: float, RE: float) -> float:

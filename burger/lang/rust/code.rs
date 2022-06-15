@@ -38,9 +38,9 @@ fn flux(u: &[f64], jth: usize, dx: f64) -> f64 {
 }
 
 fn diffusion(u: &[f64], jth: usize, dx: f64, re: f64) -> f64 {
-    let diffision_plus = 1.0/12.0*u[jth-1] - 5.0/4.0*u[jth] + 5.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2];
-    let diffision_minus = -11.0/12.0*u[jth-1] + 3.0/4.0*u[jth] + 1.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2];
-    return (diffision_plus-diffision_minus) / (re*dx.powi(2));
+    let diffusion_plus = 1.0/12.0*u[jth-1] - 5.0/4.0*u[jth] + 5.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2];
+    let diffusion_minus = -11.0/12.0*u[jth-1] + 3.0/4.0*u[jth] + 1.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2];
+    return (diffusion_plus-diffusion_minus) / (re*dx.powi(2));
 }
 
 fn lu(u: &[f64], jth: usize, dx: f64, re: f64) -> f64 {

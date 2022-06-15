@@ -13,34 +13,34 @@ program main
     allocate(u1(N+7), u2(N+7), un(N+7), uold(N+7))
 
     dx = L / N
-    dt = __CFL__ * L / N
-    nt = nint(T / dt)
+    dt = __CFL__ * dx
+    nt = idnint(T / dt)
     u1(:) = 0.d0
     u2(:) = 0.d0
     un(:) = 0.d0
 
-    do ith = 5, N+4
-        un(ith) = ( &
-            - dcos(2.d0*PI*(ith-3.5)*dx) / (2.d0*PI) &
-            + dcos(2.d0*PI*(ith-4.5)*dx) / (2.d0*PI) &
+    do ith = 4, N+3
+        un(ith+1) = ( &
+            - dcos(2.d0*PI*(ith-2.5)*dx) / (2.d0*PI) &
+            + dcos(2.d0*PI*(ith-3.5)*dx) / (2.d0*PI) &
         ) / dx + 1.d0
     end do
 
     do ith = 1, nt
         uold(:) = un(:)
-        do jth = 5, N+4
+        do jth = 4, N+3
             call lu(uold, N, jth, dx, Re, lu_value)
-            u1(jth) = uold(jth) + dt*lu_value
+            u1(jth+1) = uold(jth+1) + dt*lu_value
         end do
         call boundary(u1, N)
-        do jth = 5, N+4
+        do jth = 4, N+3
             call lu(u1, N, jth, dx, Re, lu_value)
-            u2(jth) = 3.d0/4.d0*uold(jth) + 1.d0/4.d0*u1(jth) + 1.d0/4.d0*dt*lu_value
+            u2(jth+1) = 3.d0/4.d0*uold(jth+1) + 1.d0/4.d0*u1(jth+1) + 1.d0/4.d0*dt*lu_value
         end do
         call boundary(u2, N)
-        do jth = 5, N+4
+        do jth = 4, N+3
             call lu(u2, N, jth, dx, Re, lu_value)
-            un(jth) = 1.d0/3.d0*uold(jth) + 2.d0/3.d0*u2(jth) + 2.d0/3.d0*dt*lu_value
+            un(jth+1) = 1.d0/3.d0*uold(jth+1) + 2.d0/3.d0*u2(jth+1) + 2.d0/3.d0*dt*lu_value
         end do
         call boundary(un, N)
     end do
@@ -74,12 +74,12 @@ subroutine weno(a, b, c, d, e, result)
     real(f64), intent(out) :: result
     real(f64) :: beta1, beta2, beta3, wf1, wf2, wf3, u1, u2, u3
 
-    beta1 = 13.d0/12.d0*(a - 2.d0*b + c)**2 + 1.d0/4.d0*(a - 4.d0*b + 3.d0*c)**2
-    beta2 = 13.d0/12.d0*(b - 2.d0*c + d)**2 + 1.d0/4.d0*(b - d)**2
-    beta3 = 13.d0/12.d0*(c - 2.d0*d + e)**2 + 1.d0/4.d0*(3.d0*c - 4.d0*d + e)**2
-    wf1 = 1.d0/10.d0 / (beta1 + 1e-6) ** 2
-    wf2 = 3.d0/5.d0 / (beta2 + 1e-6) ** 2
-    wf3 = 3.d0/10.d0 / (beta3 + 1e-6) ** 2
+    beta1 = 13.d0/12.d0*(a-2.d0*b+c)**2 + 1.d0/4.d0*(a-4.d0*b+3.d0*c)**2
+    beta2 = 13.d0/12.d0*(b-2.d0*c+d)**2 + 1.d0/4.d0*(b-d)**2
+    beta3 = 13.d0/12.d0*(c-2.d0*d+e)**2 + 1.d0/4.d0*(3.d0*c-4.d0*d+e)**2
+    wf1 = 1.d0/10.d0 / (beta1+1d-6)**2
+    wf2 = 3.d0/5.d0 / (beta2+1d-6)**2
+    wf3 = 3.d0/10.d0 / (beta3+1d-6)**2
     u1 = 1.d0/3.d0*a - 7.d0/6.d0*b + 11.d0/6.d0*c
     u2 = -1.d0/6.d0*b + 5.d0/6.d0*c + 1.d0/3.d0*d
     u3 = 1.d0/3.d0*c + 5.d0/6.d0*d - 1.d0/6.d0*e
@@ -90,16 +90,16 @@ subroutine flux(u, N, jth, dx, result)
     use, intrinsic :: iso_fortran_env, only: f64=>real64
     implicit none
 
-    real(f64), dimension(N+7), intent(inout) :: u
+    real(f64), dimension(N+7), intent(in) :: u
     real(f64), intent(in) :: dx
     integer, intent(in) :: N, jth
     real(f64), intent(out) :: result
     real(f64) :: upp, upm, ump, umm, alpha1, alpha2, flux1, flux2
 
-    call weno(u(jth+3), u(jth+2), u(jth+1), u(jth), u(jth-1), upp)
-    call weno(u(jth-2), u(jth-1), u(jth), u(jth+1), u(jth+2), upm)
-    call weno(u(jth+2), u(jth+1), u(jth), u(jth-1), u(jth-2), ump)
-    call weno(u(jth-3), u(jth-2), u(jth-1), u(jth), u(jth+1), umm)
+    call weno(u(jth+4), u(jth+3), u(jth+2), u(jth+1), u(jth), upp)
+    call weno(u(jth-1), u(jth), u(jth+1), u(jth+2), u(jth+3), upm)
+    call weno(u(jth+3), u(jth+2), u(jth+1), u(jth), u(jth-1), ump)
+    call weno(u(jth-2), u(jth-1), u(jth), u(jth+1), u(jth+2), umm)
     alpha1 = max(dabs(upp), dabs(upm))
     alpha2 = max(dabs(ump), dabs(umm))
     flux1 = 1.d0/2.d0 * (1.d0/2.d0*upm**2 + 1.d0/2.d0*upp**2 - alpha1*(upp-upm)/2.d0)
@@ -111,22 +111,22 @@ subroutine diffusion(u, N, jth, dx, Re, result)
     use, intrinsic :: iso_fortran_env, only: f64=>real64
     implicit none
 
-    real(f64), dimension(N+7), intent(inout) :: u
+    real(f64), dimension(N+7), intent(in) :: u
     real(f64), intent(in) :: dx, Re
     integer, intent(in) :: N, jth
     real(f64), intent(out) :: result
-    real(f64) :: diffision_plus, diffision_minus
+    real(f64) :: diffusion_plus, diffusion_minus
 
-    diffision_plus = 1.d0/12.d0*u(jth-1) - 5.d0/4.d0*u(jth) + 5.d0/4.d0*u(jth+1) - 1.d0/12.d0*u(jth+2)
-    diffision_minus = -11.d0/12.d0*u(jth-1) + 3.d0/4.d0*u(jth) + 1.d0/4.d0*u(jth+1) - 1.d0/12.d0*u(jth+2)
-    result = (diffision_plus-diffision_minus) / (Re*dx**2)
+    diffusion_plus = 1.d0/12.d0*u(jth) - 5.d0/4.d0*u(jth+1) + 5.d0/4.d0*u(jth+2) - 1.d0/12.d0*u(jth+3)
+    diffusion_minus = -11.d0/12.d0*u(jth) + 3.d0/4.d0*u(jth+1) + 1.d0/4.d0*u(jth+2) - 1.d0/12.d0*u(jth+3)
+    result = (diffusion_plus-diffusion_minus) / (Re*dx**2)
 end subroutine
 
 subroutine lu(u, N, jth, dx, Re, result)
     use, intrinsic :: iso_fortran_env, only: f64=>real64
     implicit none
 
-    real(f64), dimension(N+7), intent(inout) :: u
+    real(f64), dimension(N+7), intent(in) :: u
     real(f64), intent(in) :: dx, Re
     integer, intent(in) :: N, jth
     real(f64), intent(out) :: result

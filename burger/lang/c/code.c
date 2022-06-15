@@ -47,9 +47,9 @@ double flux(double *u, size_t jth, double dx) {
 }
 
 double diffusion(double *u, size_t jth, double dx) {
-    double diffision_plus = 1.0/12.0*u[jth-1] - 5.0/4.0*u[jth] + 5.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2];
-    double diffision_minus = -11.0/12.0*u[jth-1] + 3.0/4.0*u[jth] + 1.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2];
-    return (diffision_plus-diffision_minus) / (RE*pow2(dx));
+    double diffusion_plus = 1.0/12.0*u[jth-1] - 5.0/4.0*u[jth] + 5.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2];
+    double diffusion_minus = -11.0/12.0*u[jth-1] + 3.0/4.0*u[jth] + 1.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2];
+    return (diffusion_plus-diffusion_minus) / (RE*pow2(dx));
 }
 
 double lu(double *u, size_t jth, double dx) {
@@ -58,7 +58,7 @@ double lu(double *u, size_t jth, double dx) {
 
 void print_array(double *array, size_t length) {
     for (size_t ith=0; ith<length; ith++) {
-        printf("%.7f, ", array[ith]);
+        printf("%.17f, ", array[ith]);
     }
     printf("\n");
 }

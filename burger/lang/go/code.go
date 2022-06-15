@@ -79,9 +79,9 @@ func flux(u []float64, jth uint, dx float64) float64 {
 }
 
 func diffusion(u []float64, jth uint, dx float64, re float64) float64 {
-    diffision_plus := 1.0/12.0*u[jth-1] - 5.0/4.0*u[jth] + 5.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2];
-    diffision_minus := -11.0/12.0*u[jth-1] + 3.0/4.0*u[jth] + 1.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2];
-    return (diffision_plus-diffision_minus) / (re*math.Pow(dx, 2));
+    diffusion_plus := 1.0/12.0*u[jth-1] - 5.0/4.0*u[jth] + 5.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2];
+    diffusion_minus := -11.0/12.0*u[jth-1] + 3.0/4.0*u[jth] + 1.0/4.0*u[jth+1] - 1.0/12.0*u[jth+2];
+    return (diffusion_plus-diffusion_minus) / (re*math.Pow(dx, 2));
 }
 
 func lu(u []float64, jth uint, dx float64, re float64) float64 {
