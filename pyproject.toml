@@ -1,0 +1,19 @@
+[project]
+name = "burger.bench"
+version = "0.1.0"
+description = "Benchmark the Burgers' equation in multiple programming languages"
+authors = [
+    {name = "Iydon Liang", email = "liangiydon@gmail.com"},
+]
+license-expression = "GPL-3.0-only"
+dependencies = []
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = ""
+
+[tool.pdm]
+
+[build-system]
+requires = ["pdm-pep517>=0.12.0"]
+build-backend = "pdm.pep517.api"
