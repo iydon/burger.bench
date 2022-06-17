@@ -1,4 +1,4 @@
-PYTHON = python3
+PYTHON = pdm run python3
 DOCKER = docker
 VERSION = 0.1.3
 
@@ -8,10 +8,9 @@ VERSION = 0.1.3
 help:     ## Print the usage
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
-bench:    ## Run benchmark scripts
-	cp script/$@.py .
-	$(PYTHON) $@.py
-	rm $@.py
+bench:    ## Run benchmark script and plot
+	$(PYTHON) script/$@.py
+	$(PYTHON) script/plot.py
 
 docker:   ## Build image from Dockerfile
 	$(DOCKER) build -t bench:$(VERSION) .

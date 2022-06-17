@@ -1,6 +1,9 @@
+__root__ = __import__('pathlib').Path(__file__).absolute().parents[1]
+__import__('sys').path.append(__root__.as_posix())
+
+
 import json
 import pathlib as p
-import sys
 import typing as t
 
 import matplotlib.pyplot as plt
@@ -66,39 +69,38 @@ class Figure:
 
 
 if __name__ == '__main__':
-    root = p.Path('image')
-    root.mkdir(parents=True, exist_ok=True)
+    path = __root__ / 'static' / 'data' / 'bench.json'
+    directory = __root__ / 'static' / 'image'
+    directory.mkdir(parents=True, exist_ok=True)
 
-    for path in sys.argv[1:]:
-        data = json.loads(p.Path(path).read_text())['data']
-        # memory
-        directory = root / 'memory'
-        directory.mkdir(parents=True, exist_ok=True)
-        memory = data['memory']
-        for field in next(iter(next(iter(memory.values())).values())):
-            figure = Figure.new().set_color_number(len(memory))
-            for lang, values in memory.items():
-                xs, ys = [], []
-                for N, value in values.items():
-                    xs.append(int(N))
-                    ys.append(value[field]['mean']*1000/2**20)
-                figure.semilogy(xs, ys, label=lang.capitalize())
-            figure \
-                .set_label(x='N', y='Memory (MiB)') \
-                .set_title(f'Memory Usage of Different Programming Languages ({field})') \
-                .save(directory/f'{field}.png', legend_ncol=1)
-        # time
-        time = data['time']
-        figure = Figure.new().set_color_number(len(time))
-        for lang, values in time.items():
-            xs, ys, errs = [], [], []
+    data = json.loads(p.Path(path).read_text())['data']
+    # memory
+    dir_memory = directory / 'memory'
+    dir_memory.mkdir(parents=True, exist_ok=True)
+    memory = data['memory']
+    for field in next(iter(next(iter(memory.values())).values())):
+        figure = Figure.new().set_color_number(len(memory))
+        for lang, values in memory.items():
+            xs, ys = [], []
             for N, value in values.items():
                 xs.append(int(N))
-                ys.append(value['mean'])
-                errs.append(value['stddev'])
-            figure.errorbar(xs, ys, errs, label=lang.capitalize())
+                ys.append(value[field]['mean']*1000/2**20)
+            figure.semilogy(xs, ys, label=lang.capitalize())
         figure \
-            .set_label(x='N', y='Time (s)') \
-            .set_title('Runtime of Different Programming Languages') \
-            .save(root/'time.png', legend_ncol=1)
-        plt.show()
+            .set_label(x='N', y='Memory (MiB)') \
+            .set_title(f'Memory Usage of Different Programming Languages ({field})') \
+            .save(dir_memory/f'{field}.png', legend_ncol=1)
+    # time
+    time = data['time']
+    figure = Figure.new().set_color_number(len(time))
+    for lang, values in time.items():
+        xs, ys, errs = [], [], []
+        for N, value in values.items():
+            xs.append(int(N))
+            ys.append(value['mean'])
+            errs.append(value['stddev'])
+        figure.errorbar(xs, ys, errs, label=lang.capitalize())
+    figure \
+        .set_label(x='N', y='Time (s)') \
+        .set_title('Runtime of Different Programming Languages') \
+        .save(directory/'time.png', legend_ncol=1)
