@@ -1,3 +1,7 @@
+__root__ = __import__('pathlib').Path(__file__).absolute().parents[1]
+__import__('sys').path.append(__root__.as_posix())
+
+
 import itertools as it
 
 import numpy as np
@@ -15,4 +19,4 @@ if __name__ == '__main__':
     for key1, key2 in it.combinations(keys, 2):
         error.loc[key1, key2] = error.loc[key2, key1] = \
             np.sqrt(np.mean((bs[key1].result-bs[key2].result)**2))
-    print(error)
+    error.to_csv(__root__/'static'/'data'/'error.csv')

@@ -3,7 +3,7 @@ DOCKER = docker
 VERSION = 0.1.3
 
 
-.PHONY: help bench docker shell collect uncache
+.PHONY: help bench error docker shell collect uncache
 
 help:     ## Print the usage
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
@@ -11,6 +11,9 @@ help:     ## Print the usage
 bench:    ## Run benchmark script and plot
 	$(PYTHON) script/$@.py
 	$(PYTHON) script/plot.py
+
+error:    ## Run script that compares the results
+	$(PYTHON) script/$@.py
 
 docker:   ## Build image from Dockerfile
 	$(DOCKER) build -t bench:$(VERSION) .
