@@ -12,9 +12,8 @@ from burger import Benches
 dN = 64
 threshold = 30.0
 milliseconds = 5
-directory = __root__ / 'static' / 'data'
-directory.mkdir(parents=True, exist_ok=True)
-path = directory / 'bench.json'
+path = __root__ / 'static' / 'data' / 'bench.json'
+path.parent.mkdir(parents=True, exist_ok=True)
 
 if path.exists():
     exit()
@@ -31,11 +30,12 @@ for name, Bench in Benches.Ts.items():
         result = time[name][str(N)] = bench.hyperfine(warmup=1, min_runs=7)
         if result['mean'] > threshold:
             break
-with open(directory/'bench.json', 'w') as f:
-    json.dump({
+path.write_text(
+    json.dumps({
         'meta': Benches.version(),
         'data': {
             'memory': memory,
             'time': time,
         },
-    }, f)
+    })
+)

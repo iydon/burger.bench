@@ -70,6 +70,7 @@ class Figure:
 
 if __name__ == '__main__':
     path = __root__ / 'static' / 'data' / 'bench.json'
+    path.parent.mkdir(parents=True, exist_ok=True)
     directory = __root__ / 'static' / 'image'
     directory.mkdir(parents=True, exist_ok=True)
 
