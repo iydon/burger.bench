@@ -16,6 +16,8 @@ requires-python = ">=3.8"
 Homepage = "https://github.com/iydon/burger.bench"
 
 [project.optional-dependencies]
+[tool.pdm]
+[tool.pdm.dev-dependencies]
 script = [
     "ipython>=8.4.0",
     "matplotlib>=3.5.2",
@@ -24,8 +26,6 @@ script = [
 codegen = [
     "sympy>=1.10.1",
 ]
-[tool.pdm]
-[tool.pdm.dev-dependencies]
 
 [build-system]
 requires = ["pdm-pep517>=0.12.0"]

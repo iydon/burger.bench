@@ -229,7 +229,7 @@ summary = "World timezone definitions, modern and historical"
 
 [[package]]
 name = "setuptools"
-version = "62.4.0"
+version = "62.5.0"
 requires_python = ">=3.7"
 summary = "Easily download, build, install, upgrade, and uninstall Python packages"
 
@@ -271,7 +271,7 @@ summary = "Measures the displayed width of unicode strings in a terminal"
 
 [metadata]
 lock_version = "3.1"
-content_hash = "sha256:17e3c494fd7fc6933a1c98932aeca7480b3cd03b311c3f015414831f4e4b7c99"
+content_hash = "sha256:8cbab218df926bb472856151854cc09451b1cd47651c9e675774088aa4835436"
 
 [metadata.files]
 "appnope 0.1.3" = [
@@ -571,9 +571,9 @@ content_hash = "sha256:17e3c494fd7fc6933a1c98932aeca7480b3cd03b311c3f015414831f4
     {file = "pytz-2022.1-py2.py3-none-any.whl", hash = "sha256:e68985985296d9a66a881eb3193b0906246245294a881e7c8afe623866ac6a5c"},
     {file = "pytz-2022.1.tar.gz", hash = "sha256:1e760e2fe6a8163bc0b3d9a19c4f84342afa0a2affebfaa84b01b978a02ecaa7"},
 ]
-"setuptools 62.4.0" = [
-    {file = "setuptools-62.4.0-py3-none-any.whl", hash = "sha256:5a844ad6e190dccc67d6d7411d119c5152ce01f7c76be4d8a1eaa314501bba77"},
-    {file = "setuptools-62.4.0.tar.gz", hash = "sha256:bf8a748ac98b09d32c9a64a995a6b25921c96cc5743c1efa82763ba80ff54e91"},
+"setuptools 62.5.0" = [
+    {file = "setuptools-62.5.0-py3-none-any.whl", hash = "sha256:2a5de5d1ed1fd6dfbe4f1a1079af816032e2d8dfc0975265b57a61429511d10c"},
+    {file = "setuptools-62.5.0.tar.gz", hash = "sha256:a4c782ac58fcc9e3a86e5e1a4c74cf9d24bf21e4f1562043309022e1bb76951c"},
 ]
 "six 1.16.0" = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
