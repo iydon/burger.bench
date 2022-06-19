@@ -271,7 +271,7 @@ summary = "Measures the displayed width of unicode strings in a terminal"
 
 [metadata]
 lock_version = "3.1"
-content_hash = "sha256:8cbab218df926bb472856151854cc09451b1cd47651c9e675774088aa4835436"
+content_hash = "sha256:a30ffb89e485cf793c998f3887319315fece69b6a847d564f9df8151d3262ed4"
 
 [metadata.files]
 "appnope 0.1.3" = [
