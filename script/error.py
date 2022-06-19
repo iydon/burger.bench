@@ -8,15 +8,17 @@ import numpy as np
 import pandas as pd
 
 from burger import Benches
+from burger.extra import BenchMpmath
 
 
 if __name__ == '__main__':
     path = __root__ / 'static' / 'data' / 'error.csv'
     path.parent.mkdir(parents=True, exist_ok=True)
 
+    BenchMpmath.dps = 33  # float64
+    Benches.Ts['mpmath'] = BenchMpmath
     rmse = lambda x, y: np.sqrt(np.mean((x-y)**2))
-    bs = Benches('todo', N=256, CFL=0.05) \
-        .run()
+    bs = Benches('todo', N=256, CFL=0.05).run()
     keys = list(map(str.capitalize, Benches.Ts.keys()))
     error = pd.DataFrame(0.0, index=keys, columns=keys)
     for key1, key2 in it.combinations(keys, 2):
