@@ -2,6 +2,7 @@ __all__ = ['Benches']
 
 
 import pathlib as p
+import time
 import typing as t
 
 import numpy as np
@@ -53,7 +54,10 @@ class Benches:
 
     def run(self) -> 'Benches':
         for bench in self.benches.values():
+            tic = time.time()
             bench.run()
+            toc = time.time()
+            print(f'[{bench}] Elapsed time is {toc-tic} seconds.')
         return self
 
     def reset(self) -> 'Benches':
