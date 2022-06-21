@@ -61,7 +61,7 @@ class Bench:
         self._is_compiled = False
         return self
 
-    def hyperfine(self, warmup: int = 3, min_runs: int = 9) -> t.Dict[str, t.Dict[str, t.Any]]:
+    def hyperfine(self, warmup: int = 3, min_runs: int = 9, max_runs: int = 16) -> t.Dict[str, t.Dict[str, t.Any]]:
         '''
         - Reference:
             - https://github.com/sharkdp/hyperfine
@@ -77,6 +77,8 @@ class Bench:
                 args += ['--warmup', warmup]
             if min_runs:
                 args += ['--min-runs', min_runs]
+            if max_runs:
+                args += ['--max-runs', max_runs]
             with tempfile.NamedTemporaryFile(delete=True) as f:
                 args += ['--export-json', f.name]
                 cp = self._raw(' '.join(map(str, args)), stdout=True)
