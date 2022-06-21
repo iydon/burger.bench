@@ -29,7 +29,7 @@ if __name__ == '__main__':
                 break
             memory[name][str(N)] = bench.memory(milliseconds=milliseconds)
             result = time[name][str(N)] = bench.hyperfine(warmup=1, min_runs=7)
-            if result['mean'] > threshold:
+            if result['execute']['mean'] > threshold:
                 break
     path.write_text(
         json.dumps({

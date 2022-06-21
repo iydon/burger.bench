@@ -61,23 +61,29 @@ class Bench:
         self._is_compiled = False
         return self
 
-    def hyperfine(self, warmup: int = 3, min_runs: int = 9) -> t.Dict[str, t.Any]:
+    def hyperfine(self, warmup: int = 3, min_runs: int = 9) -> t.Dict[str, t.Dict[str, t.Any]]:
         '''
         - Reference:
             - https://github.com/sharkdp/hyperfine
         '''
-        self.compile()
-        args = ['hyperfine', f"'{self._run()}'"]
-        if warmup:
-            args += ['--warmup', warmup]
-        if min_runs:
-            args += ['--min-runs', min_runs]
-        with tempfile.NamedTemporaryFile(delete=True) as f:
-            args += ['--export-json', f.name]
-            cp = self._raw(' '.join(map(str, args)), stdout=True)
-            assert cp.returncode == 0
-            f.seek(0)
-            return json.loads(f.read())['results'][0]
+        result = {}
+        commands = {
+            'compile': ' && '.join(self._compile()) or'#',
+            'execute': self._run(),
+        }
+        for key, command in commands.items():
+            args = ['hyperfine', f"'{command}'"]
+            if warmup:
+                args += ['--warmup', warmup]
+            if min_runs:
+                args += ['--min-runs', min_runs]
+            with tempfile.NamedTemporaryFile(delete=True) as f:
+                args += ['--export-json', f.name]
+                cp = self._raw(' '.join(map(str, args)), stdout=True)
+                assert cp.returncode == 0
+                f.seek(0)
+                result[key] = json.loads(f.read())['results'][0]
+        return result
 
     def memory(self, milliseconds: int = 5) -> t.Dict[str, float]:
         '''
@@ -128,6 +134,6 @@ class Bench:
             text = text.replace(f'__{key}__', str(value))
         return text
 
-    def _raw(self, command: str, stdout: bool = False) -> subprocess.CompletedProcess:
-        args = shlex.split(command)
-        return subprocess.run(args, cwd=self.directory, capture_output=not stdout)
+    def _raw(self, command: str, stdout: bool = False, shell: bool = False) -> subprocess.CompletedProcess:
+        args = command if shell else shlex.split(command)
+        return subprocess.run(args, cwd=self.directory, capture_output=not stdout, shell=shell)

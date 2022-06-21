@@ -100,19 +100,22 @@ if __name__ == '__main__':
                 .set_title(f'Memory Usage of Different Programming Languages ({field})') \
                 .save(dir_memory/f'{field}.png', legend_ncol=1)
         ## time
+        dir_time = dir_image / 'time'
+        dir_time.mkdir(parents=True, exist_ok=True)
         time = data['time']
-        figure = Figure.new().set_color_number(len(time))
-        for lang, values in time.items():
-            xs, ys, errs = [], [], []
-            for N, value in values.items():
-                xs.append(int(N))
-                ys.append(value['mean'])
-                errs.append(value['stddev'])
-            figure.errorbar(xs, ys, errs, label=lang.capitalize())
-        figure \
-            .set_label(x='N', y='Time (s)') \
-            .set_title('Runtime of Different Programming Languages') \
-            .save(dir_image/'time.png', legend_ncol=1)
+        for key, title in {('compile', 'Compile Time'), ('execute', 'Runtime')}:
+            figure = Figure.new().set_color_number(len(time))
+            for lang, values in time.items():
+                xs, ys, errs = [], [], []
+                for N, value in values.items():
+                    xs.append(int(N))
+                    ys.append(value[key]['mean'])
+                    errs.append(value[key]['stddev'])
+                figure.errorbar(xs, ys, errs, label=lang.capitalize())
+            figure \
+                .set_label(x='N', y='Time (s)') \
+                .set_title(f'{title} of Different Programming Languages') \
+                .save(dir_time/f'{key}.png', legend_ncol=1)
 
     if path_reynolds.exists():
         # reynolds
