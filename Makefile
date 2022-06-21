@@ -25,7 +25,7 @@ shell:    ## Activate docker environment
 	docker exec -it `docker container ls --filter ancestor=bench:$(VERSION) --format "{{.ID}}"` bash
 
 collect:  ## Collect benchmark data
-	docker cp `docker container ls --filter ancestor=bench:$(VERSION) --format "{{.ID}}"`:/root/burger.bench/bench.json .
+	docker cp `docker container ls --filter ancestor=bench:$(VERSION) --format "{{.ID}}"`:/root/burger.bench/static/data/bench.json .
 
 uncache:  ## Remove __pycache__ directories
 	# https://stackoverflow.com/questions/28991015/python3-project-remove-pycache-folders-and-pyc-files
