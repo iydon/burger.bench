@@ -68,7 +68,7 @@ end
 
 @inbounds \
 for ith = 1: nt
-    uold = un;
+    uold = copy(un);
     for jth = 4: N+3
         u1[jth+1] = uold[jth+1] + dt*lu(uold, jth, dx, Re);
     end
