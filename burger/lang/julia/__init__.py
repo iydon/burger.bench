@@ -7,9 +7,7 @@ import typing as t
 from ...base import Bench
 
 
-class BenchJulia(Bench):
-    __template__ = p.Path(__file__).parent / 'code.jl'
-
+class BenchJuliaBase(Bench):
     @classmethod
     def _version(self) -> str:
         return 'julia --version'
@@ -18,8 +16,17 @@ class BenchJulia(Bench):
         return []
 
     def _run(self) -> str:
-        return 'julia -O3 code.jl'
+        return f'julia -O3 {self.__template__.name}'
 
     def _parse(self, text: str) -> t.List[float]:
         text = text.replace('[', '').replace(']', '')
         return list(map(float, text.split()))
+
+
+BenchJulia = {}
+for path in (p.Path(__file__).parent/'template').iterdir():
+    BenchJulia[path.stem] = type(
+        f'BenchJulia{path.stem.upper()}',
+        (BenchJuliaBase, ),
+        {'__template__': path}
+    )

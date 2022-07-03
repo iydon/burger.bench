@@ -7,15 +7,13 @@ import typing as t
 from ...base import Bench
 
 
-class BenchRust(Bench):
-    __template__ = p.Path(__file__).parent / 'code.rs'
-
+class BenchRustBase(Bench):
     @classmethod
     def _version(self) -> str:
         return 'rustc --version'
 
     def _compile(self) -> t.List[str]:
-        return ['rustc code.rs -C opt-level=3 -o rust']
+        return [f'rustc {self.__template__.name} -C opt-level=3 -o rust']
 
     def _run(self) -> str:
         return './rust'
@@ -23,3 +21,12 @@ class BenchRust(Bench):
     def _parse(self, text: str) -> t.List[float]:
         text = text.replace('[', '').replace(']', '')
         return list(map(float, text.split(', ')))
+
+
+BenchRust = {}
+for path in (p.Path(__file__).parent/'template').iterdir():
+    BenchRust[path.stem] = type(
+        f'BenchRust{path.stem.upper()}',
+        (BenchRustBase, ),
+        {'__template__': path}
+    )

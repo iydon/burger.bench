@@ -7,15 +7,13 @@ import typing as t
 from ...base import Bench
 
 
-class BenchGo(Bench):
-    __template__ = p.Path(__file__).parent / 'code.go'
-
+class BenchGoBase(Bench):
     @classmethod
     def _version(self) -> str:
         return 'go version'
 
     def _compile(self) -> t.List[str]:
-        return ['go build -o go -ldflags "-s -w"']
+        return [f'go build -o go -ldflags "-s -w" {self.__template__.name}']
 
     def _run(self) -> str:
         return './go'
@@ -23,3 +21,12 @@ class BenchGo(Bench):
     def _parse(self, text: str) -> t.List[float]:
         text = text.replace('[', '').replace(']', '')
         return list(map(float, text.split()))
+
+
+BenchGo = {}
+for path in (p.Path(__file__).parent/'template').iterdir():
+    BenchGo[path.stem] = type(
+        f'BenchGo{path.stem.upper()}',
+        (BenchGoBase, ),
+        {'__template__': path}
+    )
