@@ -13,10 +13,10 @@ class BenchGoBase(Bench):
         return 'go version'
 
     def _compile(self) -> t.List[str]:
-        return [f'go build -o go -ldflags "-s -w" {self.__template__.name}']
+        return [f'go build -o {self.__template__.stem} -ldflags "-s -w" {self.__template__.name}']
 
     def _run(self) -> str:
-        return './go'
+        return f'./{self.__template__.stem}'
 
     def _parse(self, text: str) -> t.List[float]:
         text = text.replace('[', '').replace(']', '')

@@ -13,10 +13,10 @@ class BenchFortranBase(Bench):
         return 'gfortran --version'
 
     def _compile(self) -> t.List[str]:
-        return [f'gfortran {self.__template__.name} -O3 -o fortran']
+        return [f'gfortran {self.__template__.name} -O3 -o {self.__template__.stem}']
 
     def _run(self) -> str:
-        return './fortran'
+        return f'./{self.__template__.stem}'
 
     def _parse(self, text: str) -> t.List[float]:
         return list(map(float, text.split()))

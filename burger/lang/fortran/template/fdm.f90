@@ -15,11 +15,11 @@ program main
     nu = L / RE  ! u0 = 1
     dx = L / (N-1)
     dt = __CFL__ * dx
-    nt = idnint(T / dt)
+    nt = idint(T / dt)
     un(:) = 0.d0
 
     do ith = 0, N-1
-        un(ith+1) = dsin(2.d0*PI*ith*dx/L) + 1.d0
+        un(ith+1) = dsin(2.d0*PI*dble(ith)*dx/L) + 1.d0
     end do
 
     call calc(un, nt, N, dt, dx, nu)
@@ -48,13 +48,13 @@ subroutine calc(un, nt, nx, dt, dx, nu)
             un(jth+1) = ( &
                 + uold(jth+1) &
                 - uold(jth+1)*dt/dx*(uold(jth+1)-uold(jth)) &
-                + nu*dt/dx**2*(uold(jth+2)-2.0*uold(jth+1)+uold(jth)) &
+                + nu*dt/dx**2*(uold(jth+2)-2.d0*uold(jth+1)+uold(jth)) &
             )
         end do
         un(1) = ( &
             + uold(1) &
             - uold(1)*dt/dx*(uold(1)-uold(nx-1)) &
-            + nu*dt/dx**2*(uold(2)-2.0*uold(1)+uold(nx-1)) &
+            + nu*dt/dx**2*(uold(2)-2.d0*uold(1)+uold(nx-1)) &
         )
         un(nx) = un(1)
     end do

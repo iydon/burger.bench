@@ -5,10 +5,10 @@
 #define PI 3.14159265358979323846
 #define pow2(x) ((x)*(x))
 
-#define N 256
-#define RE 200.0
-#define L 1.0
-#define T 2.0
+#define N __N__
+#define RE __RE__
+#define L __L__
+#define T __T__
 
 void calc(double *un, size_t nt, size_t nx, double dt, double dx, double nu) {
     double *uold;
@@ -44,7 +44,7 @@ void print_array(double *array, size_t length) {
 int main() {
     double nu = L / RE;  // u0 = 1
     double dx = L / (double) (N-1);
-    double dt = 0.1 * dx;
+    double dt = __CFL__ * dx;
     double nt = (size_t) (T / dt);
     double *un;
     un = (double*) calloc((N), sizeof(double));

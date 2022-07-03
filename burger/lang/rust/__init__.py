@@ -13,10 +13,10 @@ class BenchRustBase(Bench):
         return 'rustc --version'
 
     def _compile(self) -> t.List[str]:
-        return [f'rustc {self.__template__.name} -C opt-level=3 -o rust']
+        return [f'rustc {self.__template__.name} -C opt-level=3 -o {self.__template__.stem}']
 
     def _run(self) -> str:
-        return './rust'
+        return f'./{self.__template__.stem}'
 
     def _parse(self, text: str) -> t.List[float]:
         text = text.replace('[', '').replace(']', '')

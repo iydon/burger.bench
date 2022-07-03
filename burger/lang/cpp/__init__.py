@@ -13,10 +13,10 @@ class BenchCppBase(Bench):
         return 'g++ --version'
 
     def _compile(self) -> t.List[str]:
-        return [f'g++ {self.__template__.name} -O3 -o cpp']
+        return [f'g++ {self.__template__.name} -O3 -o {self.__template__.stem}']
 
     def _run(self) -> str:
-        return './cpp'
+        return f'./{self.__template__.stem}'
 
     def _parse(self, text: str) -> t.List[float]:
         text = text.strip().rstrip(',')

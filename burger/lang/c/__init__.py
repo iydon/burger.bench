@@ -13,10 +13,10 @@ class BenchCBase(Bench):
         return 'gcc --version'
 
     def _compile(self) -> t.List[str]:
-        return [f'gcc {self.__template__.name} -lm -O3 -o c']
+        return [f'gcc {self.__template__.name} -lm -O3 -o {self.__template__.stem}']
 
     def _run(self) -> str:
-        return './c'
+        return f'./{self.__template__.stem}'
 
     def _parse(self, text: str) -> t.List[float]:
         text = text.strip().rstrip(',')
