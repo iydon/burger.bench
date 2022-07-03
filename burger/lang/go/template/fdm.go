@@ -12,9 +12,9 @@ func main() {
     const T float64 = __T__
 
     nu := L / RE  // u0 = 1
-    dx := L / float64(N)
+    dx := L / float64(N-1)
     dt := __CFL__ * dx
-    nt := uint(T / dt)
+    nt := uint(math.Floor(T / dt))
     un := make([]float64, N)
 
     var ith uint
