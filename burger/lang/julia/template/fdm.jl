@@ -14,14 +14,14 @@ function calc(un::Matrix{Float64}, nt::Int, nx::Int, dt::Float64, dx::Float64, n
     end
 end
 
-const RE = 200.0;
-const N = 256;
-const L = 1.0;
-const T = 2.0;
+const RE = __RE__;
+const N = __N__;
+const L = __L__;
+const T = __T__;
 
 const nu = L / RE;  # u0 = 1
 const dx = L / (N-1);
-const dt = 0.1 * dx;
+const dt = __CFL__ * dx;
 const nt = floor(Int, T / dt);
 global un = zeros(1, N);
 

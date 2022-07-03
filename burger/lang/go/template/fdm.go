@@ -6,14 +6,14 @@ import (
 )
 
 func main() {
-    const RE float64 = 200.0
-    const N uint = 256
-    const L float64 = 1.0
-    const T float64 = 2.0
+    const RE float64 = __RE__
+    const N uint = __N__
+    const L float64 = __L__
+    const T float64 = __T__
 
     nu := L / RE  // u0 = 1
     dx := L / float64(N)
-    dt := 0.1 * dx
+    dt := __CFL__ * dx
     nt := uint(T / dt)
     un := make([]float64, N)
 
