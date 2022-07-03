@@ -3,10 +3,11 @@ import numpy as np
 from numba import njit
 
 
-def calc(un: np.ndarray, nt: int, N: int, dt: float, dx: float, nu: float) -> np.ndarray:
+@njit
+def calc(un: np.ndarray, nt: int, nx: int, dt: float, dx: float, nu: float) -> np.ndarray:
     for _ in range(nt):
         uold = un.copy()
-        for jth in range(1, N-1):
+        for jth in range(1, nx-1):
             un[jth] = uold[jth] \
                 - uold[jth]*dt/dx*(uold[jth]-uold[jth-1]) \
                 + nu*dt/dx**2*(uold[jth+1]-2*uold[jth]+uold[jth-1])
@@ -22,7 +23,7 @@ if __name__ == '__main__':
     L = __L__
     T = __T__
 
-    nu = L / RE  # u=1
+    nu = L / RE  # u0=1
     dx = L / (N-1)
     dt = __CFL__ * dx
     nt = int(T / dt)
