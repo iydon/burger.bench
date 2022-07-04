@@ -7,9 +7,7 @@ import typing as t
 from ...base import Bench
 
 
-class BenchMpmath(Bench):
-    __template__ = p.Path(__file__).parent / 'code.py'
-
+class BenchMpmathBase(Bench):
     dps = 33
 
     @classmethod
@@ -17,10 +15,10 @@ class BenchMpmath(Bench):
         return 'python3 --version'
 
     def _compile(self) -> t.List[str]:
-        return ['python3 -m compileall code.py']
+        return [f'python3 -m compileall {self.__template__.name}']
 
     def _run(self) -> str:
-        return 'python3 -OO code.py'
+        return f'python3 -OO {self.__template__.name}'
 
     def _parse(self, text: str) -> t.List[float]:
         return list(map(float, text.split(',')))
@@ -30,3 +28,13 @@ class BenchMpmath(Bench):
             text = text.replace(f'__{key}__', str(value))
         text = text.replace('__DPS__', str(self.dps))
         return text
+
+
+BenchMpmath = {}
+for path in (p.Path(__file__).parent/'template').iterdir():
+    BenchMpmath[path.stem] = type(
+        f'BenchMpmath{path.stem.upper()}',
+        (BenchMpmathBase, ),
+        {'__template__': path}
+    )
+
