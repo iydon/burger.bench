@@ -4,7 +4,7 @@ from numba import njit
 
 
 @njit
-def calc(un: np.ndarray, nt: int, nx: int, dt: float, dx: float, nu: float) -> np.ndarray:
+def calc(un: np.ndarray, nt: int, nx: int, dt: float, dx: float, nu: float) -> None:
     for _ in range(nt):
         uold = un.copy()
         for jth in range(1, nx-1):
@@ -14,7 +14,6 @@ def calc(un: np.ndarray, nt: int, nx: int, dt: float, dx: float, nu: float) -> n
         un[-1] = un[0] = uold[0] \
             - uold[0]*dt/dx*(uold[0]-uold[-2]) \
             + nu*dt/dx**2*(uold[1]-2*uold[0]+uold[-2])
-    return un
 
 
 if __name__ == '__main__':
@@ -30,6 +29,6 @@ if __name__ == '__main__':
     xs = np.linspace(0.0, L, N)
     un = np.sin(2*np.pi*xs/L) + 1
 
-    un = calc(un, nt, N, dt, dx, nu)
+    calc(un, nt, N, dt, dx, nu)
 
     print(','.join(map(str, un)))

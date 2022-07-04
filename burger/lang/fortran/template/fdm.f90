@@ -15,7 +15,7 @@ program main
     nu = L / RE  ! u0 = 1
     dx = L / (N-1)
     dt = __CFL__ * dx
-    nt = idint(T / dt)
+    nt = idnint(T / dt)
     un(:) = 0.d0
 
     do ith = 0, N-1
