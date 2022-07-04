@@ -5,9 +5,6 @@ __import__('sys').path.append(__root__.as_posix())
 import json
 import time
 
-import matplotlib.pyplot as plt
-import numpy as np
-
 from burger.lang.rust import BenchRust
 
 
@@ -21,7 +18,7 @@ if __name__ == '__main__':
     data = {}
     for _ in range(27):
         RE *= 2
-        bench = BenchRust('todo/rust', N=1024, RE=float(RE), CFL=0.05)
+        bench = BenchRust['fvm']('todo/rust', N=1024, RE=float(RE), CFL=0.05)
         tic = time.time()
         bench.run()
         toc = time.time()
