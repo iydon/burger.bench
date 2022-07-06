@@ -83,39 +83,42 @@ if __name__ == '__main__':
         meta, data = bench['meta'], bench['data']
         for lang, version in meta.items():
             print(f'{lang.capitalize()}: {version.splitlines()[0]}')
+        names = {'fdm', 'fvm'}
         ## memory
-        dir_memory = dir_image / 'memory'
-        dir_memory.mkdir(parents=True, exist_ok=True)
-        memory = data['memory']
-        for field in next(iter(next(iter(memory.values())).values())):
-            figure = Figure.new().set_color_number(len(memory))
-            for lang, values in memory.items():
-                xs, ys = [], []
-                for N, value in values.items():
-                    xs.append(int(N))
-                    ys.append(value[field]['mean']*1000/2**20)
-                figure.semilogy(xs, ys, label=lang.capitalize())
-            figure \
-                .set_label(x='N', y='Memory (MiB)') \
-                .set_title(f'Memory Usage of Different Programming Languages ({field})') \
-                .save(dir_memory/f'{field}.png', legend_ncol=1)
+        for name in names:
+            dir_memory = dir_image / 'memory' / name
+            dir_memory.mkdir(parents=True, exist_ok=True)
+            memory = {k: v[name] for k, v in data['memory'].items()}
+            for field in next(iter(next(iter(memory.values())).values())):
+                figure = Figure.new().set_color_number(len(memory))
+                for lang, values in memory.items():
+                    xs, ys = [], []
+                    for N, value in values.items():
+                        xs.append(int(N))
+                        ys.append(value[field]['mean']*1000/2**20)
+                    figure.semilogy(xs, ys, label=lang.capitalize())
+                figure \
+                    .set_label(x='N', y='Memory (MiB)') \
+                    .set_title(f'Memory Usage of Different Programming Languages ({field})') \
+                    .save(dir_memory/f'{field}.png', legend_ncol=1)
         ## time
-        dir_time = dir_image / 'time'
-        dir_time.mkdir(parents=True, exist_ok=True)
-        time = data['time']
-        for key, title in {('compile', 'Compile Time'), ('execute', 'Runtime')}:
-            figure = Figure.new().set_color_number(len(time))
-            for lang, values in time.items():
-                xs, ys, errs = [], [], []
-                for N, value in values.items():
-                    xs.append(int(N))
-                    ys.append(value[key]['mean'])
-                    errs.append(value[key]['stddev'])
-                figure.errorbar(xs, ys, errs, label=lang.capitalize())
-            figure \
-                .set_label(x='N', y='Time (s)') \
-                .set_title(f'{title} of Different Programming Languages') \
-                .save(dir_time/f'{key}.png', legend_ncol=1)
+        for name in names:
+            dir_time = dir_image / 'time' / name
+            dir_time.mkdir(parents=True, exist_ok=True)
+            time = {k: v[name] for k, v in data['time'].items()}
+            for key, title in {('compile', 'Compile Time'), ('execute', 'Runtime')}:
+                figure = Figure.new().set_color_number(len(time))
+                for lang, values in time.items():
+                    xs, ys, errs = [], [], []
+                    for N, value in values.items():
+                        xs.append(int(N))
+                        ys.append(value[key]['mean'])
+                        errs.append(value[key]['stddev'])
+                    figure.errorbar(xs, ys, errs, label=lang.capitalize())
+                figure \
+                    .set_label(x='N', y='Time (s)') \
+                    .set_title(f'{title} of Different Programming Languages') \
+                    .save(dir_time/f'{key}.png', legend_ncol=1)
 
     if path_reynolds.exists():
         # reynolds

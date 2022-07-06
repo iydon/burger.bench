@@ -21,26 +21,33 @@ if __name__ == '__main__':
         exit()
     names = f.reduce(set.intersection, map(set, Benches.Ts.values()))
     memory, time = {}, {}
-    for lang, Bs in Benches.Ts.items():
-        memory[lang], time[lang] = {}, {}
-        for name in names:
-            memory[lang][name], time[lang][name] = {}, {}
-            N = 0
-            while True:
-                N += dN
-                bench = Bs[name](directory=f'todo/{lang}', N=N, CFL=0.05).run()
-                if np.isnan(bench.result).any():
-                    break
-                memory[lang][name][str(N)] = bench.memory(milliseconds=milliseconds)
-                result = time[lang][name][str(N)] = bench.hyperfine(warmup=3, min_runs=9, max_runs=16)
-                if result['execute']['mean'] > threshold:
-                    break
-    path.write_text(
-        json.dumps({
-            'meta': Benches.version(),
-            'data': {
-                'memory': memory,
-                'time': time,
-            },
-        })
-    )
+    try:
+        for lang, Bs in Benches.Ts.items():
+            memory[lang], time[lang] = {}, {}
+            for name in names:
+                memory[lang][name], time[lang][name] = {}, {}
+                N = 0
+                while True:
+                    N += dN
+                    bench = Bs[name](
+                        directory=f'todo/{lang}',
+                        N=N, RE=200.0, L=1.0, CFL=10/N,  # 0.05*RE/N
+                    ).run()
+                    if np.isnan(bench.result).any():
+                        break
+                    memory[lang][name][str(N)] = bench.memory(milliseconds=milliseconds)
+                    result = time[lang][name][str(N)] = bench.hyperfine(warmup=3, min_runs=9, max_runs=16)
+                    if result['execute']['mean'] > threshold:
+                        break
+    except Exception as e:
+        print(e)
+    finally:
+        path.write_text(
+            json.dumps({
+                'meta': Benches.version(),
+                'data': {
+                    'memory': memory,
+                    'time': time,
+                },
+            })
+        )

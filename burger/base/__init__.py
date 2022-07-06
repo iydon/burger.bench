@@ -68,7 +68,7 @@ class Bench:
         '''
         result = {}
         commands = {
-            'compile': ' && '.join(self._compile()) or'#',
+            'compile': ' && '.join(self._compile()) or '#',
             'execute': self._run(),
         }
         for key, command in commands.items():
@@ -87,7 +87,7 @@ class Bench:
                 result[key] = json.loads(f.read())['results'][0]
         return result
 
-    def memory(self, milliseconds: int = 5) -> t.Dict[str, float]:
+    def memory(self, milliseconds: int = 5, maxruns: int = 0xfff) -> t.Dict[str, float]:
         '''
         - Reference:
             - https://github.com/pixelb/ps_mem
@@ -101,10 +101,10 @@ class Bench:
         }
         args = shlex.split(self._run())
         p = subprocess.Popen(args, stdout=subprocess.PIPE, cwd=self.directory)
-        while p.poll() is None:
+        for _ in range(maxruns):
             try:
                 memory = self._proc.status(p.pid)
-            except ProcessLookupError:
+            except Exception:
                 break
             for field, value in memory.items():
                 temp = result[field]
@@ -112,9 +112,11 @@ class Bench:
                 temp['max'] = max(temp['max'], value)
                 temp['mean'] += value
                 temp['count'] += 1
+            if p.poll() is not None:
+                break
             time.sleep(milliseconds/1000)
         for value in result.values():
-            value['mean'] /= value['count']
+            value['mean'] /= value['count'] or 1
             value.pop('count')
         return result
 
