@@ -55,19 +55,20 @@ Therefore, in order to initially investigate what programming language is suitab
 
 For the time metrics, we recorded compile time and runtime. Compile time is largely independent of the grid resolution, while runtime is polynomial complexity.
 
-![](static/image/time/compile.png)
-
-![](static/image/time/execute.png)
+|     | FDM | FVM |
+| :-: | :-: | :-: |
+| Compile | ![](static/image/time/fdm/compile.png) | ![](static/image/time/fvm/compile.png) |
+| Execute | ![](static/image/time/fdm/execute.png) | ![](static/image/time/fvm/execute.png) |
 
 
 ### Memory
 
 For memory metrics, we use linux's `/proc/$pid/status` to record the resident set size (VmRSS) and the virtual memory size (VmSize).
 
-![](static/image/memory/VmRSS.png)
-
-![](static/image/memory/VmSize.png)
-
+|     | FDM | FVM |
+| :-: | :-: | :-: |
+| VmRSS | ![](static/image/memory/fdm/VmRSS.png) | ![](static/image/memory/fvm/VmRSS.png) |
+| VmSize | ![](static/image/memory/fdm/VmSize.png) | ![](static/image/memory/fvm/VmSize.png) |
 
 
 ## Contributing
